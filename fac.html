@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAC202 · Arts & Technology CBT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #eef2f7;
+  --surface: #ffffff;
+  --surface-soft: #f8fafc;
+  --border: #d8dee7;
+  --border-strong: #8b9db5;
+  --accent: #1f4e79;
+  --accent-soft: rgba(31,78,121,0.12);
+  --accent-2: #406a9c;
+  --text: #1f2a37;
+  --text-dim: #6d7b93;
+  --success: #2e8b57;
+  --danger: #bf3f3f;
+  --warning: #c07900;
+  --radius: 18px;
+  --mono: 'JetBrains Mono', monospace;
+  --display: 'Space Grotesk', sans-serif;
+  --body: 'Inter', sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family: var(--body);
+  background: linear-gradient(180deg, #f2f6fb 0%, #eef2f7 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding: 32px 16px;
+}
+
+.bg-glow, .bg-noise{display:none !important;}
+
+section[hidden], .modal-overlay[hidden]{display:none !important;}
+
+.app{width:100%; max-width:1020px;}
+
+.screen{animation: fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+.eyebrow{
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background: var(--accent);}
+
+h1{font-family: var(--display); font-size: 34px; font-weight:700; margin:0 0 10px; line-height:1.1; color: var(--accent);}
+h2{font-family: var(--display); font-weight:600; color:#24324a; margin:0;}
+.lede{color: var(--text-dim); line-height:1.65; margin:0 0 28px; font-size:15px; max-width:520px;}
+
+.glass{
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow:0 20px 40px rgba(69,90,108,0.08);
+}
+
+.start-screen{display:flex; justify-content:center; padding-top:6vh;}
+.start-card{padding:36px 34px; max-width:600px; width:100%;}
+
+.meta-row{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px;}
+.meta{background: var(--surface-soft); border:1px solid var(--border); border-radius:14px; padding:16px 12px; text-align:center;}
+.meta-num{display:block; font-family: var(--display); font-size:24px; color: var(--accent); font-weight:700;}
+.meta-label{display:block; font-size:11px; color: var(--text-dim); text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
+
+.rules{list-style:none; padding:0; margin:0 0 32px; display:flex; flex-direction:column; gap:10px;}
+.rules li{position:relative; padding-left:24px; font-size:14px; color: var(--text-dim); line-height:1.7;}
+.rules li::before{content:'•'; position:absolute; left:0; top:0; color: var(--accent); font-weight:700;}
+
+button{font:inherit;}
+
+.btn-primary{width:100%; background: var(--accent); color:#fff; border:none; font-family: var(--display); font-weight:700; font-size:15px; padding:15px 18px; border-radius:14px; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease; box-shadow:0 12px 24px rgba(31,78,121,0.22);}
+.btn-primary:hover{transform:translateY(-1px); box-shadow:0 18px 28px rgba(31,78,121,0.28);}
+.btn-ghost{width:100%; background: transparent; border:1px solid var(--border); color: var(--text); font-weight:600; font-size:14px; padding:14px 18px; border-radius:14px; margin-top:12px; cursor:pointer; transition:border-color .15s ease,color .15s ease;}
+.btn-ghost:hover{border-color: var(--accent); color: var(--accent);}
+
+.test-header{display:flex; align-items:center; gap:18px; padding:20px 24px; margin-bottom:20px;}
+.course-tag{font-family: var(--mono); font-size:12px; color: var(--accent); border:1px solid var(--border); padding:8px 12px; border-radius:10px; background: var(--surface-soft); white-space:nowrap; letter-spacing:0.04em;}
+.progress-wrap{flex:1; height:10px; background: var(--surface-soft); border-radius:999px; overflow:hidden; position:relative;}
+.progress-bar{height:100%; width:0%; background: var(--accent); box-shadow:0 0 16px rgba(31,78,121,0.18);}
+.timer-ring-wrap{position:relative; width:60px; height:60px; flex-shrink:0;}
+.timer-ring-wrap svg{transform:rotate(-90deg); width:60px; height:60px;}
+.timer-ring-bg{fill:none; stroke: var(--surface-soft); stroke-width:6;}
+.timer-ring-fg{fill:none; stroke: var(--accent); stroke-width:6; stroke-linecap:round; transition: stroke-dashoffset 1s linear, stroke .3s ease;}
+.timer-text{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family: var(--mono); font-size:11px; font-weight:700; color: var(--accent);}
+.timer-ring-wrap.low .timer-ring-fg{stroke: var(--danger);}
+.timer-ring-wrap.low .timer-text{color: var(--danger); animation: pulseText 1s infinite;}
+@keyframes pulseText{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+.test-body{display:grid; grid-template-columns:280px 1fr; gap:18px;}
+.palette-panel{padding:22px; height:fit-content;}
+.palette-legend{display:flex; flex-direction:column; gap:9px; margin-bottom:18px; font-size:12px; color: var(--text-dim);}
+.palette-legend span{display:flex; align-items:center; gap:8px;}
+.dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+.dot-current{background: var(--accent);}
+.dot-answered{background: var(--success);}
+.dot-flagged{background: var(--warning);}
+.dot-empty{background: var(--border); border:1px solid var(--border-strong);}
+
+.palette-grid{display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; margin-bottom:18px;}
+.pnum{font-family: var(--mono); font-size:12px; aspect-ratio:1; display:flex; align-items:center; justify-content:center; background: var(--surface-soft); border:1px solid var(--border); border-radius:12px; color: var(--text-dim); cursor:pointer; transition:transform .12s ease,border-color .12s ease;}
+.pnum:hover{transform:translateY(-1px); border-color:var(--accent);}
+.pnum.answered{background:rgba(46,139,87,0.12); color:var(--success); border-color:transparent;}
+.pnum.flagged{box-shadow: inset 0 0 0 2px var(--warning);}
+.pnum.current{background:var(--accent); color:#fff; border-color:var(--accent); font-weight:700;}
+
+.palette-actions{display:flex; flex-direction:column; gap:10px;}
+.btn-flag{background:transparent; border:1px solid var(--border); color:var(--accent); padding:12px; border-radius:12px; font-weight:700; cursor:pointer; transition:border-color .15s ease,color .15s ease;}
+.btn-flag.active{background:var(--accent-soft); border-color:var(--accent);}
+.btn-submit{background:var(--accent); color:white; border:none; padding:14px; border-radius:12px; font-weight:700; cursor:pointer; transition:transform .15s ease;}
+.btn-submit:hover{transform:translateY(-1px);}
+
+.question-panel{padding:28px 32px; display:flex; flex-direction:column;}
+.q-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+.q-head #qIndex{font-family:var(--mono); font-size:12.5px; color:var(--text-dim); letter-spacing:.04em;}
+.q-status{font-family:var(--mono); font-size:11.5px; color:var(--warning); text-transform:uppercase; letter-spacing:.06em;}
+#qText{font-size:20px; line-height:1.45; margin:0 0 24px; font-weight:600; color:#24324a;}
+.options{display:flex; flex-direction:column; gap:12px; margin-bottom:22px;}
+.opt{display:flex; align-items:flex-start; gap:14px; padding:16px 18px; border:1px solid var(--border); border-radius:14px; background:var(--surface-soft); cursor:pointer; transition:border-color .15s ease, background .15s ease, transform .1s ease;}
+.opt:hover{border-color:var(--accent); transform:translateX(1px);}
+.opt.selected{border-color:var(--accent); background:var(--accent-soft);}
+.opt:focus-within{outline:2px solid rgba(31,78,121,0.18); outline-offset:2px;}
+.opt input[type=radio]{position:absolute; opacity:0; width:1px; height:1px;}
+.opt-radio{width:19px; height:19px; border-radius:50%; border:2px solid var(--border-strong); flex-shrink:0; margin-top:2px; position:relative; transition:border-color .15s ease;}
+.opt.selected .opt-radio{border-color:var(--accent);}
+.opt.selected .opt-radio::after{content:''; position:absolute; inset:4px; border-radius:50%; background:var(--accent);}
+.opt-letter{font-family:var(--mono); font-size:11.5px; color:var(--text-dim); border:1px solid var(--border); border-radius:6px; padding:3px 8px; flex-shrink:0; margin-top:1px;}
+.opt.selected .opt-letter{color:var(--accent); border-color:var(--accent);}
+.opt-text{font-size:15px; line-height:1.6; padding-top:1px;}
+
+.nav-row{display:flex; gap:10px; margin-top:auto;}
+.btn-nav{flex:1; background: var(--surface-soft); border:1px solid var(--border); color:var(--text); padding:13px; border-radius:12px; font-weight:700; font-size:14px; cursor:pointer; transition:border-color .15s ease;}
+.btn-nav:disabled{opacity:.4; cursor:not-allowed;}
+.btn-nav:not(:disabled):hover{border-color:var(--accent);}
+.btn-nav-primary{background:var(--accent); color:white; border-color:var(--accent);}
+
+.results-head{padding:36px 30px; margin-bottom:20px; text-align:center; display:flex; flex-direction:column; align-items:center;}
+.score-ring-wrap{position:relative; width:168px; height:168px; margin:12px 0 18px;}
+.score-ring-wrap svg{transform:rotate(-90deg); width:168px; height:168px;}
+.score-ring-bg{fill:none; stroke:var(--surface-soft); stroke-width:12;}
+.score-ring-fg{fill:none; stroke:var(--accent); stroke-width:12; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1), stroke .3s ease;}
+.score-ring-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+#scorePct{font-family:var(--mono); font-size:32px; font-weight:700; color:var(--accent);}
+#scoreFrac{font-size:12px; color:var(--text-dim); margin-top:4px;}
+.results-stats{display:flex; gap:14px; justify-content:center; margin:10px 0 22px;}
+.rstat{background:var(--surface-soft); border:1px solid var(--border); border-radius:14px; padding:16px 22px; min-width:120px;}
+.rstat-num{display:block; font-family:var(--mono); font-size:22px; font-weight:700;}
+.rstat-correct{color:var(--success);}
+.rstat-wrong{color:var(--danger);}
+.rstat-skip{color:var(--text-dim);}
+.rstat-label{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em;}
+.results-filters{display:flex; gap:10px; justify-content:center; margin-bottom:20px;}
+.chip{background:var(--surface-soft); border:1px solid var(--border); color:var(--text-dim); padding:10px 18px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; transition:all .15s ease;}
+.chip-active{background:var(--accent); color:white; border-color:var(--accent);}
+.results-head .btn-ghost{max-width:220px; margin-top:10px;}
+.review-list{display:flex; flex-direction:column; gap:12px;}
+.review-item{padding:18px 20px; border-left:3px solid var(--border); background:var(--surface-soft);}
+.review-item.correct{border-left-color:var(--success);}
+.review-item.wrong{border-left-color:var(--danger);}
+.review-item.skip{border-left-color:var(--text-dim);}
+.review-q{font-weight:700; margin-bottom:10px; font-size:15px; color:#24324a;}
+.review-row{font-size:13px; color:var(--text-dim); margin-bottom:6px;}
+.review-explain{margin-top:10px; font-size:13px; color:var(--text-dim); font-style:italic;}
+
+@media (max-width: 720px){
+  .test-body{grid-template-columns:1fr;}
+  .palette-panel{order:2;}
+  .question-panel{order:1; padding:22px 20px;}
+  .palette-grid{grid-template-columns:repeat(8,1fr);}
+  h1{font-size:30px;}
+  .start-card{padding:26px 22px;}
+  .test-header{flex-direction:column; align-items:flex-start; padding:16px 18px;}
+}
+
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important;}}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"><span></span><span></span><span></span></div>
+<div class="bg-noise"></div>
+
+<div class="app" id="app">
+
+  <!-- START SCREEN -->
+  <section class="screen start-screen" id="startScreen">
+    <div class="start-card glass">
+      <p class="eyebrow">FAC202 &middot; ARTS &amp; TECHNOLOGY</p>
+      <h1>Computer-Based Test</h1>
+      <p class="lede">Practice run for the FAC202 CBT. Answer every question before the clock runs out — you can move between questions freely and flag any you want to revisit.</p>
+
+      <div class="meta-row">
+        <div class="meta"><span class="meta-num" id="metaCount">60</span><span class="meta-label">Questions</span></div>
+        <div class="meta"><span class="meta-num" id="metaTime">20:00</span><span class="meta-label">Duration</span></div>
+        <div class="meta"><span class="meta-num">1</span><span class="meta-label">Mark each</span></div>
+      </div>
+
+      <ul class="rules">
+        <li>The test submits automatically when time runs out.</li>
+        <li>Use the question grid on the left to jump to any question.</li>
+        <li>Flag a question to mark it for review before you submit.</li>
+        <li>Your progress is saved automatically if you accidentally close the tab.</li>
+      </ul>
+
+      <button class="btn-primary" id="startBtn">Start test</button>
+      <button class="btn-ghost" id="resumeBtn" hidden>Resume saved attempt</button>
+    </div>
+  </section>
+
+  <!-- TEST SCREEN -->
+  <section class="screen test-screen" id="testScreen" hidden>
+    <header class="test-header glass">
+      <div class="course-tag">FAC202</div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="timer-ring-wrap" id="timerRingWrap">
+        <svg viewBox="0 0 60 60">
+          <circle class="timer-ring-bg" cx="30" cy="30" r="26"></circle>
+          <circle class="timer-ring-fg" id="timerRingFg" cx="30" cy="30" r="26"></circle>
+        </svg>
+        <div class="timer-text" id="timer">20:00</div>
+      </div>
+    </header>
+
+    <div class="test-body">
+      <aside class="palette-panel glass">
+        <div class="palette-legend">
+          <span><i class="dot dot-current"></i>Current</span>
+          <span><i class="dot dot-answered"></i>Answered</span>
+          <span><i class="dot dot-flagged"></i>Flagged</span>
+          <span><i class="dot dot-empty"></i>Unseen</span>
+        </div>
+        <div class="palette-grid" id="palette"></div>
+        <div class="palette-actions">
+          <button class="btn-flag" id="flagBtn">Flag this question</button>
+          <button class="btn-submit" id="submitBtn">Submit test</button>
+        </div>
+      </aside>
+
+      <main class="question-panel glass">
+        <div class="q-head">
+          <span id="qIndex">Question 1 of 60</span>
+          <span class="q-status" id="qStatus"></span>
+        </div>
+        <h2 id="qText">Loading question…</h2>
+        <div class="options" id="opts"></div>
+        <div class="nav-row">
+          <button class="btn-nav" id="prevBtn">&larr; Prev</button>
+          <button class="btn-nav" id="clearBtn">Clear answer</button>
+          <button class="btn-nav btn-nav-primary" id="nextBtn">Next &rarr;</button>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <!-- RESULTS SCREEN -->
+  <section class="screen results-screen" id="resultsScreen" hidden>
+    <div class="results-head glass">
+      <p class="eyebrow">RESULT</p>
+      <h1>Test complete</h1>
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 168 168">
+          <circle class="score-ring-bg" cx="84" cy="84" r="72"></circle>
+          <circle class="score-ring-fg" id="scoreRingFg" cx="84" cy="84" r="72"></circle>
+        </svg>
+        <div class="score-ring-center">
+          <span id="scorePct">0%</span>
+          <span id="scoreFrac">0 / 60</span>
+        </div>
+      </div>
+      <div class="results-stats">
+        <div class="rstat"><span class="rstat-num rstat-correct" id="statCorrect">0</span><span class="rstat-label">Correct</span></div>
+        <div class="rstat"><span class="rstat-num rstat-wrong" id="statWrong">0</span><span class="rstat-label">Incorrect</span></div>
+        <div class="rstat"><span class="rstat-num rstat-skip" id="statSkip">0</span><span class="rstat-label">Unanswered</span></div>
+      </div>
+      <div class="results-filters">
+        <button class="chip chip-active" data-filter="all">All</button>
+        <button class="chip" data-filter="wrong">Missed</button>
+        <button class="chip" data-filter="flagged">Flagged</button>
+      </div>
+      <button class="btn-ghost" id="retryBtn">Retry test</button>
+    </div>
+    <div class="review-list" id="reviewList"></div>
+  </section>
+
+</div>
+
+<script>
+/* ==========================================================
+   FAC202 CBT — Engine
+   Replace the QUESTIONS array below with your real FAC202
+   questions. Keep the same shape for each item:
+   { q: "question text", o: ["A","B","C","D"], a: 1, e: "explanation" }
+   "a" is the zero-based index of the correct option in "o".
+========================================================== */
+
+const CONFIG = {
+  course: "FAC202",
+  durationSeconds: 20 * 60,
+  storageKey: "fac202_cbt_attempt_v1"
+};
+
+/* Sample questions derived from the FAC202 lecture notes PDF */
+const QUESTIONS = [
+  { q: "Technology is best defined as the practical application of which of the following?", o: ["Art", "Science", "History", "Literature"], a: 1, e: "Technology is the application of scientific knowledge to achieve goals and solve problems." },
+  { q: "Which item is NOT typically considered a form of art?", o: ["Painting", "Sculpture", "Dance", "Spreadsheet"], a: 3, e: "Spreadsheets are tools for organizing data, not a traditional form of artistic expression." },
+  { q: "Digital art is commonly created using tools such as Photoshop, Illustrator, or Blender and is often stored as which file type?", o: ["JPEG", "DOCX", "CSV", "TXT"], a: 0, e: "Digital art is often stored in image formats like JPEG, PNG, GIF, or MP4 for visual and animated works." },
+  { q: "What does Augmented Reality (AR) do?", o: ["Replaces the real world", "Overlays digital content onto the real world", "Creates a fully virtual world", "Only uses audio"], a: 1, e: "AR overlays digital content, such as images or information, on top of the physical world in real time." },
+  { q: "Which of these is a characteristic of Virtual Reality (VR)?", o: ["Real-world overlays", "Immersion in a digital environment", "Text-only display", "No hardware needed"], a: 1, e: "VR creates an immersive experience where the user feels present within a computer-generated environment, usually using a headset." },
+  { q: "Artificial Intelligence (AI) is a branch of computer science focused on systems that can do tasks requiring what?", o: ["Human emotions", "Human intelligence", "Only arithmetic", "Physical strength"], a: 1, e: "AI focuses on tasks requiring human intelligence, such as learning, reasoning, problem-solving, language understanding, and pattern recognition." },
+  { q: "According to the lecture notes, what does art do to technology?", o: ["Makes it more complex", "Humanizes it", "Limits its use", "Removes culture"], a: 1, e: "The notes explain that art humanizes technology, making it more accessible, meaningful, and reflective of culture." },
+  { q: "Which example is mentioned as a new form enabled by digital art?", o: ["Stone carving", "Interactive installations", "Classical music", "Engraving"], a: 1, e: "The lecture notes mention interactive installations as one of the new forms made possible by digital and technology-driven art." },
+  { q: "The printing press is cited as an example of technology that did what to art?", o: ["Made it less available", "Revolutionized art dissemination", "Replaced all artists", "Blocked access"], a: 1, e: "The printing press revolutionized the dissemination of art and made it more accessible to a wider audience." },
+  { q: "What drives technology according to the lecture notes?", o: ["Fashion trends", "Problem-solving", "Myth", "Poetry"], a: 1, e: "Technology is often driven by the need to solve human problems and improve efficiency, communication, or safety." },
+  { q: "What is the broad definition of arts in the lecture notes?", o: ["A type of science", "Human expression through creative skill", "A business process", "A form of agriculture"], a: 1, e: "Arts refers to human expression through creative skill and imagination, often to evoke emotions or communicate ideas." },
+  { q: "Which of the following is an example of performing arts?", o: ["Painting", "Theatre", "Sculpture", "Photography"], a: 1, e: "Theatre is a form of performing art, involving live performance and expression." },
+  { q: "The lecture notes say technology includes tools, techniques, and which of the following?", o: ["Stories", "Processes", "Recipes", "Paintings"], a: 1, e: "Technology includes tools, techniques, and processes used to achieve practical results." },
+  { q: "Which of these is a characteristic of digital art?", o: ["Exists only as a physical object", "Can be interactive or animated", "Cannot be reproduced", "Is always handwritten"], a: 1, e: "Digital art can be interactive or animated and exists in digital form." },
+  { q: "What role does AI play in new media art?", o: ["Creates physical paintings", "Generates visuals and audio", "Eliminates all artists", "Only prints text"], a: 1, e: "AI generates visuals, sounds, or interactive experiences based on data input or learned styles." },
+  { q: "Which device is commonly used for VR experiences?", o: ["Smartphone camera", "VR headset", "Typewriter", "Calculator"], a: 1, e: "VR headsets create immersive virtual environments for users to experience." },
+  { q: "What do AR apps typically use to display content?", o: ["Headphones", "Phone cameras", "Ink pens", "DVD players"], a: 1, e: "AR apps often use phone cameras to overlay digital content on the real world." },
+  { q: "Which of the following is a common platform for showing digital art?", o: ["Online galleries", "Market stalls", "Forest trails", "Bakery windows"], a: 0, e: "Digital art is often displayed and shared via online galleries and platforms." },
+  { q: "Which statement matches the lecture notes about technology and culture?", o: ["Technology has no cultural impact", "Technology influences culture and values", "Culture is unrelated to technology", "Technology always destroys culture"], a: 1, e: "Technology shapes daily life and influences culture and values." },
+  { q: "What is one benefit of the convergence of art and technology?", o: ["Promotes innovation", "Removes creativity", "Blocks learning", "Limits access"], a: 0, e: "The convergence of art and technology promotes innovation, creativity, and access to art." },
+  { q: "Which of these is NOT typically listed as a form of digital art?", o: ["GIF art", "Generative art", "NFT art", "Stone masonry"], a: 3, e: "Stone masonry is a traditional physical art form, not a digital art form." },
+  { q: "Which term refers to the use of scientific knowledge to solve practical problems?", o: ["Philosophy", "Technology", "Literature", "History"], a: 1, e: "Technology is the practical application of science to solve problems and meet needs." },
+  { q: "Which of these is a key characteristic of virtual reality?", o: ["2D images only", "No interactivity", "Immersion", "No electronics"], a: 2, e: "Immersion is a key characteristic of virtual reality experiences." },
+  { q: "Which application of VR is mentioned in the notes?", o: ["Cooking soup", "Medical training", "Sleeping", "Gardening"], a: 1, e: "VR is used in education and training, including medical procedure simulations." },
+  { q: "Which statement best describes AR?", o: ["AR replaces reality entirely", "AR enhances the real world", "AR only works in the dark", "AR cannot use sound"], a: 1, e: "AR enhances the real world by overlaying digital elements on top of it." },
+  { q: "AI tools like ChatGPT or DALL·E are examples of what?", o: ["Generative tools", "Historical texts", "Physical machines", "Handwritten notes"], a: 0, e: "AI tools like ChatGPT and DALL·E are generative systems used to co-create text, images, or music." },
+  { q: "The lecture notes say the term technology originally referred to what?", o: ["Applied arts", "Cooking", "Mathematics", "Sports"], a: 0, e: "The term technology originally referred to applied arts before broadening in meaning." },
+  { q: "Which of these is an example of a digital media format?", o: ["MP4", "Oil paint", "Granite", "Chalk"], a: 0, e: "MP4 is a digital format used for video, animation, and sound-based art." },
+  { q: "What kind of experience does VR create?", o: ["A physical sculpture", "A sense of presence inside a digital world", "A paper book", "A song"], a: 1, e: "VR creates a sense of presence inside a computer-generated digital world." },
+  { q: "Which of the following best describes the link between art and technology?", o: ["Symbiotic relationship", "Totally separate", "Always opposed", "Never overlapping"], a: 0, e: "Art and technology have a symbiotic relationship, each influencing and shaping the other." },
+  { q: "Which of these is an example of technology empowering artists?", o: ["Digital painting", "Stone tablets", "Handwritten letters", "Clay pots"], a: 0, e: "Digital painting uses technology to expand creative tools and mediums for artists." },
+  { q: "What does the lecture note say about the need for technology?", o: ["It is driven by problem-solving", "It is driven by myth", "It is driven by superstition", "It is driven by sleep"], a: 0, e: "Technology is driven by the need to solve practical problems and improve human life." },
+  { q: "Which of the following is NOT a typical digital art tool?", o: ["Procreate", "Photoshop", "Blender", "Chisel"], a: 3, e: "A chisel is used in traditional sculpture, not digital art creation." },
+  { q: "Which element is part of digital art according to the notes?", o: ["Interactivity", "Only static canvas", "Purely text", "No sharing"], a: 0, e: "Digital art can be interactive, animated, and easily shared online." },
+  { q: "How does the lecture describe the relationship between art and technology?", o: ["Art humanizes technology", "Art blocks technology", "Technology eliminates all art", "Art is unrelated"], a: 0, e: "The lecture notes explain that art humanizes technology and makes it more meaningful." },
+  { q: "Which form of art is directly associated with technology exploration?", o: ["VR experiences", "Cave painting", "Stone carving", "Live orchestra"], a: 0, e: "VR experiences are a modern form of art that explores the capabilities of technology." },
+  { q: "Which of these is a characteristic of AR?", o: ["Real-time interaction", "Static posters", "Only black and white", "No user input"], a: 0, e: "AR supports real-time interaction by blending virtual elements with the physical environment." },
+  { q: "Which technology-related field studies ethical guidelines for biology and inventions?", o: ["Bioethics", "Meteorology", "Economics", "Architecture"], a: 0, e: "Bioethics examines ethical guidelines for biological research, inventions, and their applications." },
+  { q: "What does ecosophy champion?", o: ["Environmental care", "Fast fashion", "Loud music", "Video games"], a: 0, e: "Ecosophy is ecological philosophy that champions environmental protection and the green movement." },
+  { q: "Which of these is an example of an AR application?", o: ["Virtual try-on for makeup", "Stone carving workshop", "Pen and paper drawing", "Manual typewriting"], a: 0, e: "AR applications include virtual try-ons that overlay digital items on live camera views." },
+  { q: "What can AI do in a creative installation?", o: ["React to audience participation", "Stay completely static", "Only print paper", "Play no sound"], a: 0, e: "AI can enable installations that respond intelligently to audience interaction." },
+  { q: "Which of these is a digital art example mentioned in the notes?", o: ["3D modeling", "Stone carving", "Calligraphy", "Oil painting"], a: 0, e: "3D modeling is a digital art technique enabled by technology." },
+  { q: "What type of art is created or presented using digital technology?", o: ["Digital art", "Classical art", "Cave art", "Traditional pottery"], a: 0, e: "Digital art is created or presented with digital technology, such as software or computers." },
+  { q: "Which of these is NOT an AI function mentioned in the notes?", o: ["Learning", "Pattern recognition", "Problem-solving", "Baking bread"], a: 3, e: "AI in the notes performs learning, reasoning, and pattern recognition, not tasks like baking bread." },
+  { q: "What does the digital art characteristic of reproducibility mean?", o: ["It can be easily copied and shared", "It cannot be reproduced", "It only exists once", "It is always physical"], a: 0, e: "Digital art is often easily reproducible and shareable in digital formats." },
+  { q: "Which example shows how technology influences art consumption?", o: ["Online platforms", "Cave galleries", "Stone ages", "Hand-delivery only"], a: 0, e: "Online platforms have changed how people consume and access art." },
+  { q: "Which technology is often used for immersive gaming and art?", o: ["VR", "Chalkboards", "Typewriters", "Stone tablets"], a: 0, e: "VR is used for immersive gaming, art, and virtual experiences." },
+  { q: "What is technology described as in the lecture notes?", o: ["A means to an end", "A goal without purpose", "Purely entertainment", "Only for artists"], a: 0, e: "Technology is described as a means to achieve ends such as solving problems and improving life." },
+  { q: "Digital art can exist in which of these formats?", o: ["MP4", "Clay", "Marble", "Wood"], a: 0, e: "MP4 is a digital format for video and motion-based art." },
+  { q: "How does the lecture say art interacts with technology?", o: ["It inspires technological development", "It stops technology from growing", "It is irrelevant to technology", "It replaces technology"], a: 0, e: "Art inspires technological development and pushes boundaries in how technology evolves." },
+  { q: "Which of these is NOT a benefit of combining art and technology?", o: ["Fostering creativity", "Promoting innovation", "Extending reach of art", "Destroying communication"], a: 3, e: "Combining art and technology promotes creativity and innovation, not destruction of communication." },
+  { q: "Which of these is a digital art tool mentioned in the notes?", o: ["Procreate", "Chisel", "Whetstone", "Clay"], a: 0, e: "Procreate is a digital tool commonly used for creating digital paintings and illustrations." },
+  { q: "Which of these is a component of technology?", o: ["Systems", "Myths", "Fairytales", "Poems"], a: 0, e: "Technology includes systems, tools, and methods for practical use." },
+  { q: "What does AR add to the real environment?", o: ["Digital content", "Physical weight", "Odd smells", "Historical facts only"], a: 0, e: "AR adds digital content like images or information to the real-world environment." },
+  { q: "Which of the following is a characteristic of technological evolution?", o: ["Evolving definition", "Stays the same forever", "Never changes", "Remains only physical"], a: 0, e: "Technology's meaning has evolved over time to include a broader range of tools and systems." },
+  { q: "What does bioethics examine?", o: ["Ethical use of biological inventions", "Only art theory", "Weather patterns", "Sports rules"], a: 0, e: "Bioethics examines ethical questions around biology, inventions, and their applications." },
+  { q: "Which of these is part of environmental ethics?", o: ["Protecting nature", "Writing novels", "Mixing paints", "Playing music"], a: 0, e: "Environmental ethics focuses on protecting nature and supporting life through responsible actions." },
+  { q: "Which statement about digital art is true?", o: ["It can be animated", "It is always a physical object", "It never uses computers", "It cannot be shared"], a: 0, e: "Digital art can be animated and is typically created or displayed using computers." },
+  { q: "What is one way art influences technology?", o: ["It creates new demands and directions", "It stops all inventions", "It lowers technology quality", "It refuses innovation"], a: 0, e: "Art influences technology by creating new demands, inspiring innovation, and shaping development." },
+  { q: "Which of these is a real application of AI mentioned in the notes?", o: ["Creative collaboration", "Manual stone shaping", "Tree planting", "Hand sewing"], a: 0, e: "AI supports creative collaboration by generating text, images, and music with artists." }
+];
+
+/* ---------------- state ---------------- */
+let current = 0;
+let answers = {};
+let flagged = {};
+let order = [];
+let secondsLeft = CONFIG.durationSeconds;
+let timerHandle = null;
+let submitted = false;
+let activeFilter = "all";
+
+/* ---------------- elements ---------------- */
+const el = (id) => document.getElementById(id);
+const startScreen = el("startScreen");
+const testScreen = el("testScreen");
+const resultsScreen = el("resultsScreen");
+
+const startBtn = el("startBtn");
+const resumeBtn = el("resumeBtn");
+const metaCount = el("metaCount");
+const metaTime = el("metaTime");
+
+const timerEl = el("timer");
+const timerRingWrap = el("timerRingWrap");
+const timerRingFg = el("timerRingFg");
+const TIMER_R = 26;
+const TIMER_CIRC = 2 * Math.PI * TIMER_R;
+timerRingFg.style.strokeDasharray = `${TIMER_CIRC}`;
+
+const progressBar = el("progressBar");
+const paletteEl = el("palette");
+const flagBtn = el("flagBtn");
+const submitBtn = el("submitBtn");
+
+const qIndexEl = el("qIndex");
+const qStatusEl = el("qStatus");
+const qTextEl = el("qText");
+const optsEl = el("opts");
+const prevBtn = el("prevBtn");
+const nextBtn = el("nextBtn");
+const clearBtn = el("clearBtn");
+
+const scorePct = el("scorePct");
+const scoreFrac = el("scoreFrac");
+const scoreRingFg = el("scoreRingFg");
+const SCORE_R = 72;
+const SCORE_CIRC = 2 * Math.PI * SCORE_R;
+scoreRingFg.style.strokeDasharray = `${SCORE_CIRC}`;
+scoreRingFg.style.strokeDashoffset = `${SCORE_CIRC}`;
+
+const statCorrect = el("statCorrect");
+const statWrong = el("statWrong");
+const statSkip = el("statSkip");
+const reviewList = el("reviewList");
+const retryBtn = el("retryBtn");
+
+/* ---------------- init screen labels ---------------- */
+metaCount.textContent = QUESTIONS.length;
+metaTime.textContent = formatTime(CONFIG.durationSeconds);
+
+/* ---------------- resume check ---------------- */
+(function checkSavedAttempt() {
+  const saved = loadState();
+  if (saved && !saved.submitted) resumeBtn.hidden = false;
+})();
+
+startBtn.addEventListener("click", () => {
+  clearState();
+  current = 0; answers = {}; flagged = {}; secondsLeft = CONFIG.durationSeconds; submitted = false;
+  shuffleQuestions();
+  beginTest();
+});
+
+resumeBtn.addEventListener("click", () => {
+  const saved = loadState();
+  if (!saved) return beginTest();
+  current = saved.current || 0;
+  answers = saved.answers || {};
+  flagged = saved.flagged || {};
+  secondsLeft = typeof saved.secondsLeft === "number" ? saved.secondsLeft : CONFIG.durationSeconds;
+  order = Array.isArray(saved.order) && saved.order.length === QUESTIONS.length ? saved.order : [];
+  beginTest();
+});
+
+function shuffleQuestions() {
+  order = QUESTIONS.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+}
+
+function beginTest() {
+  if (order.length !== QUESTIONS.length) shuffleQuestions();
+  startScreen.hidden = true;
+  testScreen.hidden = false;
+  buildPalette();
+  renderQuestion();
+  startTimer();
+}
+
+/* ---------------- timer ---------------- */
+function startTimer() {
+  clearInterval(timerHandle);
+  tick();
+  timerHandle = setInterval(tick, 1000);
+}
+
+function tick() {
+  timerEl.textContent = formatTime(secondsLeft);
+  const low = secondsLeft <= 60;
+  timerRingWrap.classList.toggle("low", low);
+  const fraction = secondsLeft / CONFIG.durationSeconds;
+  timerRingFg.style.strokeDashoffset = `${TIMER_CIRC * (1 - fraction)}`;
+  if (secondsLeft <= 0) {
+    clearInterval(timerHandle);
+    finishTest();
+    return;
+  }
+  secondsLeft--;
+  saveState();
+}
+
+function formatTime(total) {
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+/* ---------------- rendering ---------------- */
+function renderQuestion() {
+  const q = QUESTIONS[order[current]];
+  qIndexEl.textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+  qStatusEl.textContent = flagged[current] ? "Flagged" : "";
+  qTextEl.textContent = q.q;
+
+  optsEl.innerHTML = "";
+  q.o.forEach((text, n) => {
+    const selected = answers[current] === n;
+    const row = document.createElement("label");
+    row.className = "opt" + (selected ? " selected" : "");
+    row.innerHTML = `
+      <input type="radio" name="opt" ${selected ? "checked" : ""}>
+      <span class="opt-radio"></span>
+      <span class="opt-letter">${String.fromCharCode(65 + n)}</span>
+      <span class="opt-text"></span>
+    `;
+    row.querySelector(".opt-text").textContent = text;
+    row.addEventListener("click", () => selectOption(n));
+    optsEl.appendChild(row);
+  });
+
+  flagBtn.classList.toggle("active", !!flagged[current]);
+  flagBtn.textContent = flagged[current] ? "Unflag this question" : "Flag this question";
+  prevBtn.disabled = current === 0;
+  nextBtn.textContent = current === QUESTIONS.length - 1 ? "Review & submit" : "Next →";
+
+  updatePalette();
+  updateProgress();
+}
+
+function selectOption(n) {
+  answers[current] = n;
+  renderQuestion();
+  saveState();
+}
+
+function updateProgress() {
+  const answeredCount = Object.keys(answers).length;
+  progressBar.style.width = `${(answeredCount / QUESTIONS.length) * 100}%`;
+}
+
+/* ---------------- palette ---------------- */
+function buildPalette() {
+  paletteEl.innerHTML = "";
+  QUESTIONS.forEach((_, n) => {
+    const btn = document.createElement("div");
+    btn.className = "pnum";
+    btn.textContent = n + 1;
+    btn.addEventListener("click", () => {
+      current = n;
+      renderQuestion();
+    });
+    paletteEl.appendChild(btn);
+  });
+  updatePalette();
+}
+
+function updatePalette() {
+  Array.from(paletteEl.children).forEach((btn, n) => {
+    btn.classList.toggle("current", n === current);
+    btn.classList.toggle("answered", answers[n] !== undefined);
+    btn.classList.toggle("flagged", !!flagged[n]);
+  });
+}
+
+/* ---------------- nav buttons ---------------- */
+prevBtn.addEventListener("click", () => {
+  if (current > 0) { current--; renderQuestion(); }
+});
+
+nextBtn.addEventListener("click", () => {
+  if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+  else finishTest();
+});
+
+clearBtn.addEventListener("click", () => {
+  delete answers[current];
+  renderQuestion();
+  saveState();
+});
+
+flagBtn.addEventListener("click", () => {
+  if (flagged[current]) delete flagged[current];
+  else flagged[current] = true;
+  renderQuestion();
+  saveState();
+});
+
+/* keyboard shortcuts */
+document.addEventListener("keydown", (e) => {
+  if (testScreen.hidden) return;
+  if (e.key === "ArrowRight") nextBtn.click();
+  if (e.key === "ArrowLeft") prevBtn.click();
+  const num = parseInt(e.key, 10);
+  if (!isNaN(num) && num >= 1 && num <= QUESTIONS[order[current]].o.length) selectOption(num - 1);
+  if (/^[A-D]$/i.test(e.key)) {
+    const letter = e.key.toUpperCase().charCodeAt(0) - 65;
+    if (letter < QUESTIONS[order[current]].o.length) selectOption(letter);
+  }
+});
+
+/* ---------------- submit flow ---------------- */
+submitBtn.addEventListener("click", finishTest);
+
+function finishTest() {
+  submitted = true;
+  clearInterval(timerHandle);
+  saveState();
+  renderResults();
+  testScreen.hidden = true;
+  resultsScreen.hidden = false;
+}
+
+/* ---------------- results ---------------- */
+function renderResults() {
+  let correct = 0, wrong = 0, skip = 0;
+  order.forEach((qIndex, n) => {
+    const q = QUESTIONS[qIndex];
+    if (answers[n] === undefined) skip++;
+    else if (answers[n] === q.a) correct++;
+    else wrong++;
+  });
+
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  scorePct.textContent = `${pct}%`;
+  scoreFrac.textContent = `${correct} / ${QUESTIONS.length}`;
+  statCorrect.textContent = correct;
+  statWrong.textContent = wrong;
+  statSkip.textContent = skip;
+
+  const ringColor = pct >= 70 ? "var(--success)" : pct >= 40 ? "var(--warning)" : "var(--danger)";
+  scoreRingFg.style.stroke = ringColor;
+  requestAnimationFrame(() => {
+    scoreRingFg.style.strokeDashoffset = `${SCORE_CIRC * (1 - pct / 100)}`;
+  });
+
+  renderReviewList();
+}
+
+function renderReviewList() {
+  reviewList.innerHTML = "";
+  order.forEach((qIndex, n) => {
+    const q = QUESTIONS[qIndex];
+    const userAns = answers[n];
+    const state = userAns === undefined ? "skip" : (userAns === q.a ? "correct" : "wrong");
+
+    if (activeFilter === "wrong" && state !== "wrong" && state !== "skip") return;
+    if (activeFilter === "flagged" && !flagged[n]) return;
+
+    const item = document.createElement("div");
+    item.className = `review-item glass ${state}`;
+    item.innerHTML = `
+      <div class="review-q">${n + 1}. ${escapeHtml(q.q)}</div>
+      <div class="review-row">Your answer: <b>${userAns !== undefined ? escapeHtml(q.o[userAns]) : "— not answered —"}</b></div>
+      <div class="review-row">Correct answer: <b>${escapeHtml(q.o[q.a])}</b></div>
+      <div class="review-explain">${escapeHtml(q.e)}</div>
+    `;
+    reviewList.appendChild(item);
+  });
+
+  if (!reviewList.children.length) {
+    reviewList.innerHTML = `<div class="review-item glass"><div class="review-q">Nothing to show for this filter.</div></div>`;
+  }
+}
+
+document.querySelectorAll(".chip").forEach((chip) => {
+  chip.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach((c) => c.classList.remove("chip-active"));
+    chip.classList.add("chip-active");
+    activeFilter = chip.dataset.filter;
+    renderReviewList();
+  });
+});
+
+retryBtn.addEventListener("click", () => {
+  clearState();
+  current = 0; answers = {}; flagged = {}; secondsLeft = CONFIG.durationSeconds; submitted = false; activeFilter = "all";
+  resultsScreen.hidden = true;
+  startScreen.hidden = false;
+  resumeBtn.hidden = true;
+});
+
+/* ---------------- persistence ---------------- */
+function saveState() {
+  const state = { current, answers, flagged, secondsLeft, submitted, order };
+  try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); } catch (e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(CONFIG.storageKey);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+function clearState() {
+  try { localStorage.removeItem(CONFIG.storageKey); } catch (e) {}
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
+</script>
+</body>
+</html>
