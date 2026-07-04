@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAC202 · Arts & Technology CBT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- START SCREEN -->
+  <section class="screen start-screen" id="startScreen">
+    <div class="start-card">
+      <p class="eyebrow">FAC202 &middot; ARTS &amp; TECHNOLOGY</p>
+      <h1>Computer-Based Test</h1>
+      <p class="lede">Practice run for the FAC202 CBT. Answer every question before the clock runs out — you can move between questions freely and flag any you want to revisit.</p>
+
+      <div class="meta-row">
+        <div class="meta"><span class="meta-num" id="metaCount">60</span><span class="meta-label">Questions</span></div>
+        <div class="meta"><span class="meta-num" id="metaTime">20:00</span><span class="meta-label">Duration</span></div>
+        <div class="meta"><span class="meta-num">1</span><span class="meta-label">Mark each</span></div>
+      </div>
+
+      <ul class="rules">
+        <li>The test submits automatically when time runs out.</li>
+        <li>Use the question grid on the left to jump to any question.</li>
+        <li>Flag a question to mark it for review before you submit.</li>
+        <li>Your progress is saved automatically if you accidentally close the tab.</li>
+      </ul>
+
+      <button class="btn-primary" id="startBtn">Start test</button>
+      <button class="btn-ghost" id="resumeBtn" hidden>Resume saved attempt</button>
+    </div>
+  </section>
+
+  <!-- TEST SCREEN -->
+  <section class="screen test-screen" id="testScreen" hidden>
+    <header class="test-header">
+      <div class="course-tag">FAC202</div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="clock" id="timer">20:00</div>
+    </header>
+
+    <div class="test-body">
+      <aside class="palette-panel">
+        <div class="palette-legend">
+          <span><i class="dot dot-current"></i>Current</span>
+          <span><i class="dot dot-answered"></i>Answered</span>
+          <span><i class="dot dot-flagged"></i>Flagged</span>
+          <span><i class="dot dot-empty"></i>Unseen</span>
+        </div>
+        <div class="palette-grid" id="palette"></div>
+        <div class="palette-actions">
+          <button class="btn-flag" id="flagBtn">Flag this question</button>
+          <button class="btn-submit" id="submitBtn">Submit test</button>
+        </div>
+      </aside>
+
+      <main class="question-panel">
+        <div class="q-head">
+          <span id="qIndex">Question 1 of 60</span>
+          <span class="q-status" id="qStatus"></span>
+        </div>
+        <h2 id="qText">Loading question…</h2>
+        <div class="options" id="opts"></div>
+        <div class="nav-row">
+          <button class="btn-nav" id="prevBtn">&larr; Prev</button>
+          <button class="btn-nav" id="clearBtn">Clear answer</button>
+          <button class="btn-nav btn-nav-primary" id="nextBtn">Next &rarr;</button>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <!-- RESULTS SCREEN -->
+  <section class="screen results-screen" id="resultsScreen" hidden>
+    <div class="results-head">
+      <p class="eyebrow">RESULT</p>
+      <h1 id="scoreHeadline">0 / 60</h1>
+      <p class="lede" id="scoreSub">You scored 0%.</p>
+      <div class="results-stats">
+        <div class="rstat"><span class="rstat-num rstat-correct" id="statCorrect">0</span><span class="rstat-label">Correct</span></div>
+        <div class="rstat"><span class="rstat-num rstat-wrong" id="statWrong">0</span><span class="rstat-label">Incorrect</span></div>
+        <div class="rstat"><span class="rstat-num rstat-skip" id="statSkip">0</span><span class="rstat-label">Unanswered</span></div>
+      </div>
+      <div class="results-filters">
+        <button class="chip chip-active" data-filter="all">All</button>
+        <button class="chip" data-filter="wrong">Missed</button>
+        <button class="chip" data-filter="flagged">Flagged</button>
+      </div>
+      <button class="btn-ghost" id="retryBtn">Retry test</button>
+    </div>
+    <div class="review-list" id="reviewList"></div>
+  </section>
+
+</div>
+
+<!-- SUBMIT CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal" hidden>
+  <div class="modal-card">
+    <h3>Submit this test?</h3>
+    <p id="confirmText">You still have questions unanswered.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="cancelSubmit">Keep going</button>
+      <button class="btn-primary" id="confirmSubmit">Submit anyway</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
